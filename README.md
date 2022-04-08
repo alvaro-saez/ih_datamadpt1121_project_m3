@@ -131,7 +131,34 @@ df_diamonds_test = import_csv_diamonds("../files/diamonds_test.csv")
 
 ## **3 - Ins pect our data*
 
-REMEMBER OUR GOAL --> To predict the price, so we are going to study how the different features are correlated with the price. I have use TABLEAU and SEABORN.
+REMEMBER OUR GOAL --> To predict the price, so we are going to study how the different features are correlated with the price. I have use:
+- TABLEAU
+- SEABORN.
 
 **A) Correlation coeficient:**
+```
+def correlation_diamonds(df_diamonds_enriched):
+    df_diamonds_corr = df_diamonds_enriched.corr().reset_index()
+    return df_diamonds_corr
+df_diamonds_corr = correlation_diamonds(df_diamonds_train)
+```
+
+```
+def correlation_visualization(df_diamonds_enriched):
+    df_diamonds_corr2 = df_diamonds_enriched.corr()
+    sns.set(rc={'figure.figsize':(12,8)})
+    return sns.heatmap(df_diamonds_corr2, annot=True);
+corr_graf = correlation_visualization(df_diamonds_corr)
+```
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/CORRELATION.png"></p>
+
+So we see a clearly positive correlation between carat, x, y, z with the price. Let´s go to see it with Tableau:
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/carat.png"></p>
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/x.png"></p>
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/y.png"></p>
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/z.png"></p>
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/depth.png"></p>
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/table.png"></p>
+
+We are going to use this information to ponder those features giving more importance to carat, x, y and z.
 
