@@ -367,4 +367,6 @@ The result was very similar:
 # WORK IN PROGRESS
 I will update this readme with a way to ampliate our data source, having a higest train dataframe. With this method I obtained a RMSE of 76.
 
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/graf2.png"></p>
+
 # THANK YOU VERY MUCH
