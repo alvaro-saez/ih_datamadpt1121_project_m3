@@ -129,7 +129,7 @@ df_diamonds_test = import_csv_diamonds("../files/diamonds_test.csv")
 
 - city: city where the diamonds is reported to be sold.
 
-## **3 - Ins pect our data*
+## **3 - Inspect our data**
 
 REMEMBER OUR GOAL --> To predict the price, so we are going to study how the different features are correlated with the price. I have use:
 - TABLEAU
@@ -162,14 +162,60 @@ So we see a clearly positive correlation between carat, x, y, z with the price. 
 
 We are going to use this information to ponder those features giving more importance to carat, x, y and z.
 
-## **4 - Exploratory Data Analysis (EDA)*
+## **4 - Exploratory Data Analysis (EDA)**
 
 We need to prepare our dataframes to fit it to the best model.
 
-a) Missing a cero values: The is no any nulls, but we have different raws with "0" in "x", "y" and "z" columns. There are different ways to see it, but we use the next code (we have to reapeat it for each column):
+**a) Missing and cero values:** The is no any nulls, but we have different raws with "0" in "x", "y" and "z" columns. There are different ways to see it, but we use the next code (we have to reapeat it for each column):
 
 ```
 df_diamonds_train[df_diamonds_train["x"]<1]
 ```
 
-For our case, we are going to drop the "Z" column (making different tests it decrease the RMSE oof our predictions) 
+For our case, we are going to drop the "Z" column (making different tests it decrease the RMSE oof our predictions).
+
+¿How to deal with the cero values? There are different techniques. We are going to use the cero values in our prediction beacause I have done many tests and the one with the lowest RMSE was using "0" values, but the next picture is the best way for this data frame to deal with those cero values:
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/mean.png"></p>
+
+**b) Drop columns**
+**AN ADVISE!**
+in a EDA process is very common to drop columns, so you can create a function to save your time. Here you have an example:
+```
+def delete_column(df, column_name):
+    del df[column_name]
+    return "column deleted"
+```
+
+I have delete the next columns:
+ - Z
+ - index id
+ - id
+
+**c) Remove outliers** In this case, all the raws are usefull for our model, but here you have a function if you want to remove outliers of a normal distribution.
+```
+def remove_outlier(df_in, col_name):
+    q1 = df_in[col_name].quantile(0.30)
+    q3 = df_in[col_name].quantile(0.70)
+    iqr = q3-q1 #Interquartile range
+    fence_low  = q1-1.5*iqr
+    fence_high = q3+1.5*iqr
+    df_out = df_in.loc[(df_in[col_name] > fence_low) & (df_in[col_name] < fence_high)]
+   return df_out
+```
+**d) Create new columns**: It could be counterproductive, because it is a good practise to remove columns highly correlated (Feature selection"), but for our model (you will see it later) will be usefull.
+ - one new feature multiplying "x" and "y"
+ - another feature dividing depth and table
+
+**d) Encoding the categorical features**:  I have test the next methods:
+
+- One hot encoding (discarded because of the model peculiarity): using the pd.get_dummmies() method of Pandas
+
+- Label encoding (which give us a better core in our model)
+```
+X_train_cat[["cut","color","clarity","city"]] = X_train_cat[["cut","color","clarity","city"]].astype("category")
+
+X_train_cat["cut"] = X_train_cat["cut"].cat.codes
+X_train_cat["color"] = X_train_cat["color"].cat.codes
+X_train_cat["clarity"] = X_train_cat["clarity"].cat.codes
+X_train_cat["city"] = X_train_cat["city"].cat.codes
+```
