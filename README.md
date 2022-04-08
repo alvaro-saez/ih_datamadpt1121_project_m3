@@ -234,3 +234,29 @@ The reality was it didn´t decrease ed RMSE, so I tried to make a manual pondera
  The final result is the next dataframe:
  
  <p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/tablefinal.png"></p>
+ 
+** This process have been applied to both data sources (train and test)**
+ 
+ ## **5 - Create X_train, y_train and X_test**
+ 
+ - X_train --> It has all the features except the Price (also except the id, index_id and z)
+ - y_train --> It has only the price (the target for our model)
+ - X_test --> It has the same features of X_train, but the source is different (“diamonds_test.csv”)
+
+ ## **5 - Test different models**
+ 
+ The models tested were:
+ - linear_model.Lasso()
+ - ElasticNet()
+ - Ridge()
+ - SVR()
+ - SGDRegressor()
+ - LinearRegression()
+ - XGBRegressor
+ - RandomForestRegressor()
+
+The best one for our dataframes and our goal was RandomForestRegressor(), beacuase it obtained the lowest RMSE through two different methods.
+
+RandomForestRegressor() DEFINITION (source: https://www.geeksforgeeks.org/random-forest-regression-in-python/)
+A Random Forest is an ensemble technique capable of performing both regression and classification tasks with the use of multiple decision trees and a technique called Bootstrap and Aggregation, commonly known as bagging. The basic idea behind this is to combine multiple decision trees in determining the final output rather than relying on individual decision trees. 
+Random Forest has multiple decision trees as base learning models. We randomly perform row sampling and feature sampling from the dataset forming sample datasets for every model. This part is called Bootstrap.
