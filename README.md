@@ -162,3 +162,14 @@ So we see a clearly positive correlation between carat, x, y, z with the price. 
 
 We are going to use this information to ponder those features giving more importance to carat, x, y and z.
 
+## **4 - Exploratory Data Analysis (EDA)*
+
+We need to prepare our dataframes to fit it to the best model.
+
+a) Missing a cero values: The is no any nulls, but we have different raws with "0" in "x", "y" and "z" columns. There are different ways to see it, but we use the next code (we have to reapeat it for each column):
+
+```
+df_diamonds_train[df_diamonds_train["x"]<1]
+```
+
+For our case, we are going to drop the "Z" column (making different tests it decrease the RMSE oof our predictions) 
