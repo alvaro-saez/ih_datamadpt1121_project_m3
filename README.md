@@ -206,7 +206,7 @@ def remove_outlier(df_in, col_name):
  - one new feature multiplying "x" and "y"
  - another feature dividing depth and table
 
-**d) Encoding the categorical features**:  I have test the next methods:
+**e) Encoding the categorical features**:  I have test the next methods:
 
 - One hot encoding (discarded because of the model peculiarity): using the pd.get_dummmies() method of Pandas
 
@@ -219,3 +219,18 @@ X_train_cat["color"] = X_train_cat["color"].cat.codes
 X_train_cat["clarity"] = X_train_cat["clarity"].cat.codes
 X_train_cat["city"] = X_train_cat["city"].cat.codes
 ```
+
+**f) Manual ponderation**:  I have tried three different methods of scaling:
+- StandardScaler()
+- MinMaxScaler()
+- RobustScaler()
+
+The reality was it didn´t decrease ed RMSE, so I tried to make a manual ponderation to assign more "power" to carat, x and y by different ways:
+
+ 1. multiplying carat x1000
+ 2. multiplying "x" and" and creating a new column called "xy"
+ 3. also I have multiply "x" and "y" x10
+
+ The final result is the next dataframe:
+ 
+ <p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/tablefinal.png"></p>
