@@ -74,3 +74,40 @@ df_diamonds_train = query_diamond(query_diamonds_full_train)
 ```
 
 **B ) CSV FILE:** “diamonds_test.csv”, which contains 13485 entries to make the prediction:
+
+¿How to read a CSV file?. With a Pandas method (pd.read_csv())
+```
+def import_csv_diamonds(location):
+    df_diamonds_test = pd.read_csv(location)
+    return df_diamonds_test
+
+df_diamonds_test = import_csv_diamonds("../files/diamonds_test.csv")
+```
+
+#### FEATURES TO STUDY:
+- price in US dollars ($326--$18,823). This will be our the target column. It is only in the tarin dataframe.
+
+**The 4 Cs of Diamonds:**
+
+- carat (0.2--5.01) The carat is the weight of the diamond.  One carat equals 1/5 gram and is subdivided into 100 points. Carat weight is the most important feature of the 4Cs to predict the price. 
+
+- cut (Fair, Good, Very Good, Premium, Ideal) It is the quality of the cut. A well-cut diamond will direct more light through the crown. A diamond with a depth that's too shallow or too deep will allow light to escape through the sides or the bottom of the stone.
+
+- color, from J (worst) to D (best). The diamond’s color ranges from an icy white colorless to a light yellow. Colorless is the most rare and therefore the most expensive. Yellow is the least rare and therefore the least expensive.
+
+- clarity (I1 (worst), SI2, SI1, VS2, VS1, VVS2, VVS1, IF (best)) The clarity refers to the diamond's tiny markings. Flawless (IF) is the most rare and therefore the most expensive. Included (I) is the least rare and therefore the least expensive.
+
+**Dimensions:**
+
+- x length in mm (0--10.74)
+
+- y width in mm (0--58.9)
+
+- z depth in mm (0--31.8)
+
+**Other Features:**
+- depth: total depth percentage = z / mean(x, y) = 2 * z / (x + y) (43--79)
+
+- table: width of top of diamond relative to widest point (43--95)
+
+- city: city where the diamonds is reported to be sold.
