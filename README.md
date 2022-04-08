@@ -17,7 +17,7 @@ For it, we have to understand the different data sets, prepare and clean the dat
 
   <li>Test different models</li>
 
-  <li>Optimized the hyperparameters of the model chosen</li>
+  <li>Optimize the hyperparameters of the model chosen</li>
 
   <li>Make the prediction</li>
 
@@ -243,7 +243,7 @@ The reality was it didn´t decrease ed RMSE, so I tried to make a manual pondera
  - y_train --> It has only the price (the target for our model)
  - X_test --> It has the same features of X_train, but the source is different (“diamonds_test.csv”)
 
- ## **5 - Test different models**
+ ## **6 - Test different models**
  
  The models tested were:
  - linear_model.Lasso()
@@ -278,3 +278,32 @@ ADVANTAGES:
 MAIN DESADVANTAGE:
 
 - They are not able to extrapolate outside the range of the predictors observed in the training data.
+
+## **7 - Optimized the hyperparameters of the model chosen**
+
+To can know the best hyperparameters I have used the GridSearchCV() method:
+
+```
+n_estimators = [int(x) for x in np.linspace(start = 200, stop = 2000, num = 10)]
+# Maximum number of levels in tree
+max_depth = [int(x) for x in np.linspace(10, 110, num = 11)]
+max_depth.append(None)
+
+random_grid = {'n_estimators': n_estimators,
+               'max_depth': max_depth
+               }
+```
+
+```
+rf = RandomForestRegressor()
+
+rf_random = RandomizedSearchCV(estimator = rf, 
+                               param_distributions = random_grid, 
+                               cv = 5, 
+                               verbose=3, 
+                               random_state=42, 
+                               n_jobs = -1)
+# Fit the random search model
+rf_random.fit(X_train_cat, y_train_cat)
+rf_random.best_params_
+```
