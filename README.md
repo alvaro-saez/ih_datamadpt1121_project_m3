@@ -5,6 +5,8 @@ For it, we have to understand the different data sets, prepare and clean the dat
 
 ## **STEPS:**
 <ol>
+  <li>Importing Libraries</li>
+  
   <li>Load the Data available</li>
 
   <li>Inspect it</li>
@@ -22,8 +24,23 @@ For it, we have to understand the different data sets, prepare and clean the dat
   <li>Evaluate the error of the prediction</li>
 </ol>
 
+## **1 - Importing Libraries:**
+```
+import pandas as pd
+import numpy as np
+from sqlalchemy import create_engine
+import plotly.express as px
+import seaborn as sns
 
-## **1 - Load the Data available:**
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.ensemble import RandomForestRegressor
+
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import mean_squared_error
+```
+
+## **2 - Load the Data available:**
 
 We have two different data sources:
 
@@ -111,3 +128,10 @@ df_diamonds_test = import_csv_diamonds("../files/diamonds_test.csv")
 - table: width of top of diamond relative to widest point (43--95)
 
 - city: city where the diamonds is reported to be sold.
+
+## **3 - Ins pect our data*
+
+REMEMBER OUR GOAL --> To predict the price, so we are going to study how the different features are correlated with the price. I have use TABLEAU and SEABORN.
+
+**A) Correlation coeficient:**
+
