@@ -344,3 +344,27 @@ rmse
 Plotting a chart with the las 10 predictions we can see how precise it is:
 <p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/graf1.png"></p>
 
+**b) cross-validation method:**
+```
+scores = cross_val_score(model, 
+                         X_train_cat, 
+                         y_train_cat, 
+                         scoring='neg_root_mean_squared_error', 
+                         cv=5,
+                         n_jobs=-1)
+
+print(type(model), '\n')
+print(scores, '\n')
+print(np.mean(-scores), '\n')
+```
+
+The result was very similar:
+
+[-541.06307357 -554.78944972 -552.36873579 -596.55870621 -547.44943305] 
+
+558.4458796694024 
+
+# WORK IN PROGRESS
+I will update this readme with a way to ampliate our data source, having a higest train dataframe. With this method I obtained a RMSE of 76.
+
+# THANK YOU VERY MUCH
