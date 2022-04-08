@@ -281,7 +281,7 @@ MAIN DESADVANTAGE:
 
 ## **7 - Optimized the hyperparameters of the model chosen**
 
-To can know the best hyperparameters I have used the GridSearchCV() method:
+To can know the best hyperparameters I have used the GridSearchCV() method, chosen n_estimators= 1024,and max_depth= 16:
 
 ```
 n_estimators = [int(x) for x in np.linspace(start = 200, stop = 2000, num = 10)]
@@ -307,3 +307,40 @@ rf_random = RandomizedSearchCV(estimator = rf,
 rf_random.fit(X_train_cat, y_train_cat)
 rf_random.best_params_
 ```
+
+## **8 - Make the prediction**
+
+```
+model = RandomForestRegressor(n_estimators= 1024,
+ max_depth= 16)
+model.fit(X_train_cat, y_train_cat)
+predictions = model.predict(X_test).clip(350,18000)
+id_predictions = [i for i in range(0,len(predictions))]
+predictions_df = pd.DataFrame({"id":id_predictions , "price":predictions })
+predictions_df.head()
+predictions_df.to_csv("p3_alvaro_model_diamonds.csv", sep=",", index=False)
+```
+
+## **9 - Evaluate the error**
+
+Through 2 different methods:
+
+**a) train_test_split() and RMSE formula:**
+Using a 80% for the training and a 20% for the test:
+
+```
+X_train2, X_test2, y_train2, y_test2 = train_test_split(X_train_cat, y_train_cat, test_size=0.2, random_state=42)
+model2 = RandomForestRegressor()
+model2.fit(X_train2, y_train2)
+predictions2 = model2.predict(X_test2).clip(350,18000)
+```
+
+```
+check = pd.DataFrame({'Ground truth':y_test2, 'Predictions':predictions2, 'Diff':y_test2-predictions2})
+rmse = mean_squared_error(y_test2, predictions2)**0.5
+rmse
+```
+
+Plotting a chart with the las 10 predictions we can see how precise it is:
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/graf1.png"></p>
+
