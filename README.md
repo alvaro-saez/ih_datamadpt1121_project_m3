@@ -257,6 +257,24 @@ The reality was it didn´t decrease ed RMSE, so I tried to make a manual pondera
 
 The best one for our dataframes and our goal was RandomForestRegressor(), beacuase it obtained the lowest RMSE through two different methods.
 
-RandomForestRegressor() DEFINITION (source: https://www.geeksforgeeks.org/random-forest-regression-in-python/)
+#### RandomForestRegressor() DEFINITION (source: https://www.geeksforgeeks.org/random-forest-regression-in-python/)
+
 A Random Forest is an ensemble technique capable of performing both regression and classification tasks with the use of multiple decision trees and a technique called Bootstrap and Aggregation, commonly known as bagging. The basic idea behind this is to combine multiple decision trees in determining the final output rather than relying on individual decision trees. 
 Random Forest has multiple decision trees as base learning models. We randomly perform row sampling and feature sampling from the dataset forming sample datasets for every model. This part is called Bootstrap.
+
+ADVANTAGES:
+
+- They are able to select predictors automatically.
+- They can be applied to regression and classification problems.
+- Trees can, in theory, handle both numerical and categorical predictors without having to create dummy variables or one-hot-encoding. In practice, this depends on the implementation of the algorithm that each library has.
+- As they are non-parametric methods, it is not necessary that any specific type of distribution be met.
+- They generally require much less data cleaning and pre-processing compared to other statistical learning methods (for example, they do not require standardization).
+- They are not very influenced by outliers.
+- If for some observation, the value of a predictor is not available, despite not being able to reach any terminal node, a prediction can be obtained using all the observations belonging to the last node reached. The accuracy of the prediction will be reduced but at least it can be obtained.
+- They are very useful in data exploration, they allow the most important variables (predictors) to be identified quickly and efficiently.
+- Thanks to the Out-of-Bag Error, its validation error can be estimated without the need to resort to computationally expensive strategies such as cross-validation. This does not apply in the case of time series.
+- They have good scalability, they can be applied to data sets with a high number of observations.
+
+MAIN DESADVANTAGE:
+
+- They are not able to extrapolate outside the range of the predictors observed in the training data.
