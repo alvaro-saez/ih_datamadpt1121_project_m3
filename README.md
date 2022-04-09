@@ -364,8 +364,37 @@ The result was very similar:
 
 558.4458796694024 
 
-# WORK IN PROGRESS
-I will update this readme with a way to ampliate our data source, having a higest train dataframe. With this method I obtained a RMSE of 76.
+# ALTERNATIVE B)
+I tyied to ampliate our data source, having a higest train dataframe. With this method I obtained a RMSE of 76.
+
+¿How? If you can discover the elasticity between price and the features, you can create new records increasing the price in 1 $. In my case I made a simple increase of the features, without making any mean over the combination of the features with the increasing of the price.
+```
+def ejecuciondatasetaugmentation(df_diamonds_train):
+    df_diamonds_train2 = df_diamonds_train.copy()
+    df_diamonds_train2["carat"] = df_diamonds_train2["carat"]+0.01
+    df_diamonds_train2["depth"] = df_diamonds_train2["depth"]+0.1
+    df_diamonds_train2["table"] = df_diamonds_train2["table"]+0.1
+    df_diamonds_train2["x"] = df_diamonds_train2["x"]+0.01
+    df_diamonds_train2["y"] = df_diamonds_train2["y"]+0.01
+    df_diamonds_train2["z"] = df_diamonds_train2["z"]+0.01
+    df_diamonds_train2["price"] = df_diamonds_train2["price"]+1
+
+    df_diamonds_train3 = pd.concat([df_diamonds_train,df_diamonds_train2], axis=0).reset_index(drop=True)
+
+    df_diamonds_train = df_diamonds_train3.copy()
+    return df_diamonds_train
+```
+```
+df_diamonds_train = ejecuciondatasetaugmentation(df_diamonds_train)
+df_diamonds_train = ejecuciondatasetaugmentation(df_diamonds_train)
+df_diamonds_train = ejecuciondatasetaugmentation(df_diamonds_train)
+df_diamonds_train = ejecuciondatasetaugmentation(df_diamonds_train)
+df_diamonds_train = ejecuciondatasetaugmentation(df_diamonds_train)
+```
+
+I obtained more than 1.000.000 of records to train de model. 
+
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/rmse2.png"></p>
 
 <p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/graf2.png"></p>
 
