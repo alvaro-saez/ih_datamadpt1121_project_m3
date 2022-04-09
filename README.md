@@ -17,7 +17,7 @@ For it, we have to understand the different data sets, prepare and clean the dat
 
   <li>Test different models</li>
 
-  <li>Optimized the hyperparameters of the model chosen</li>
+  <li>Optimize the hyperparameters of the model chosen</li>
 
   <li>Make the prediction</li>
 
@@ -206,7 +206,7 @@ def remove_outlier(df_in, col_name):
  - one new feature multiplying "x" and "y"
  - another feature dividing depth and table
 
-**d) Encoding the categorical features**:  I have test the next methods:
+**e) Encoding the categorical features**:  I have test the next methods:
 
 - One hot encoding (discarded because of the model peculiarity): using the pd.get_dummmies() method of Pandas
 
@@ -219,3 +219,183 @@ X_train_cat["color"] = X_train_cat["color"].cat.codes
 X_train_cat["clarity"] = X_train_cat["clarity"].cat.codes
 X_train_cat["city"] = X_train_cat["city"].cat.codes
 ```
+
+**f) Manual ponderation**:  I have tried three different methods of scaling:
+- StandardScaler()
+- MinMaxScaler()
+- RobustScaler()
+
+The reality was it didn´t decrease ed RMSE, so I tried to make a manual ponderation to assign more "power" to carat, x and y by different ways:
+
+ 1. multiplying carat x1000
+ 2. multiplying "x" and" and creating a new column called "xy"
+ 3. also I have multiply "x" and "y" x10
+
+ The final result is the next dataframe:
+ 
+ <p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/tablefinal.png"></p>
+ 
+** This process have been applied to both data sources (train and test)**
+ 
+ ## **5 - Create X_train, y_train and X_test**
+ 
+ - X_train --> It has all the features except the Price (also except the id, index_id and z)
+ - y_train --> It has only the price (the target for our model)
+ - X_test --> It has the same features of X_train, but the source is different (“diamonds_test.csv”)
+
+ ## **6 - Test different models**
+ 
+ The models tested were:
+ - linear_model.Lasso()
+ - ElasticNet()
+ - Ridge()
+ - SVR()
+ - SGDRegressor()
+ - LinearRegression()
+ - XGBRegressor
+ - RandomForestRegressor()
+
+The best one for our dataframes and our goal was RandomForestRegressor(), beacuase it obtained the lowest RMSE through two different methods.
+
+#### RandomForestRegressor() DEFINITION (source: https://www.geeksforgeeks.org/random-forest-regression-in-python/)
+
+A Random Forest is an ensemble technique capable of performing both regression and classification tasks with the use of multiple decision trees and a technique called Bootstrap and Aggregation, commonly known as bagging. The basic idea behind this is to combine multiple decision trees in determining the final output rather than relying on individual decision trees. 
+Random Forest has multiple decision trees as base learning models. We randomly perform row sampling and feature sampling from the dataset forming sample datasets for every model. This part is called Bootstrap.
+
+ADVANTAGES:
+
+- They are able to select predictors automatically.
+- They can be applied to regression and classification problems.
+- Trees can, in theory, handle both numerical and categorical predictors without having to create dummy variables or one-hot-encoding. In practice, this depends on the implementation of the algorithm that each library has.
+- As they are non-parametric methods, it is not necessary that any specific type of distribution be met.
+- They generally require much less data cleaning and pre-processing compared to other statistical learning methods (for example, they do not require standardization).
+- They are not very influenced by outliers.
+- If for some observation, the value of a predictor is not available, despite not being able to reach any terminal node, a prediction can be obtained using all the observations belonging to the last node reached. The accuracy of the prediction will be reduced but at least it can be obtained.
+- They are very useful in data exploration, they allow the most important variables (predictors) to be identified quickly and efficiently.
+- Thanks to the Out-of-Bag Error, its validation error can be estimated without the need to resort to computationally expensive strategies such as cross-validation. This does not apply in the case of time series.
+- They have good scalability, they can be applied to data sets with a high number of observations.
+
+MAIN DESADVANTAGE:
+
+- They are not able to extrapolate outside the range of the predictors observed in the training data.
+
+## **7 - Optimized the hyperparameters of the model chosen**
+
+To can know the best hyperparameters I have used the GridSearchCV() method, chosen n_estimators= 1024,and max_depth= 16:
+
+```
+n_estimators = [int(x) for x in np.linspace(start = 200, stop = 2000, num = 10)]
+# Maximum number of levels in tree
+max_depth = [int(x) for x in np.linspace(10, 110, num = 11)]
+max_depth.append(None)
+
+random_grid = {'n_estimators': n_estimators,
+               'max_depth': max_depth
+               }
+```
+
+```
+rf = RandomForestRegressor()
+
+rf_random = RandomizedSearchCV(estimator = rf, 
+                               param_distributions = random_grid, 
+                               cv = 5, 
+                               verbose=3, 
+                               random_state=42, 
+                               n_jobs = -1)
+# Fit the random search model
+rf_random.fit(X_train_cat, y_train_cat)
+rf_random.best_params_
+```
+
+## **8 - Make the prediction**
+
+```
+model = RandomForestRegressor(n_estimators= 1024,
+ max_depth= 16)
+model.fit(X_train_cat, y_train_cat)
+predictions = model.predict(X_test).clip(350,18000)
+id_predictions = [i for i in range(0,len(predictions))]
+predictions_df = pd.DataFrame({"id":id_predictions , "price":predictions })
+predictions_df.head()
+predictions_df.to_csv("p3_alvaro_model_diamonds.csv", sep=",", index=False)
+```
+
+## **9 - Evaluate the error**
+
+Through 2 different methods:
+
+**a) train_test_split() and RMSE formula:**
+Using a 80% for the training and a 20% for the test:
+
+```
+X_train2, X_test2, y_train2, y_test2 = train_test_split(X_train_cat, y_train_cat, test_size=0.2, random_state=42)
+model2 = RandomForestRegressor()
+model2.fit(X_train2, y_train2)
+predictions2 = model2.predict(X_test2).clip(350,18000)
+```
+
+```
+check = pd.DataFrame({'Ground truth':y_test2, 'Predictions':predictions2, 'Diff':y_test2-predictions2})
+rmse = mean_squared_error(y_test2, predictions2)**0.5
+rmse
+```
+
+Plotting a chart with the las 10 predictions we can see how precise it is:
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/graf1.png"></p>
+
+**b) cross-validation method:**
+```
+scores = cross_val_score(model, 
+                         X_train_cat, 
+                         y_train_cat, 
+                         scoring='neg_root_mean_squared_error', 
+                         cv=5,
+                         n_jobs=-1)
+
+print(type(model), '\n')
+print(scores, '\n')
+print(np.mean(-scores), '\n')
+```
+
+The result was very similar:
+
+[-541.06307357 -554.78944972 -552.36873579 -596.55870621 -547.44943305] 
+
+558.4458796694024 
+
+# ALTERNATIVE B)
+I tyied to ampliate our data source, having a higest train dataframe. With this method I obtained a RMSE of 76.
+
+¿How? If you can discover the elasticity between price and the features, you can create new records increasing the price in 1 $. In my case I made a simple increase of the features, without making any mean over the combination of the features with the increasing of the price.
+```
+def ejecuciondatasetaugmentation(df_diamonds_train):
+    df_diamonds_train2 = df_diamonds_train.copy()
+    df_diamonds_train2["carat"] = df_diamonds_train2["carat"]+0.01
+    df_diamonds_train2["depth"] = df_diamonds_train2["depth"]+0.1
+    df_diamonds_train2["table"] = df_diamonds_train2["table"]+0.1
+    df_diamonds_train2["x"] = df_diamonds_train2["x"]+0.01
+    df_diamonds_train2["y"] = df_diamonds_train2["y"]+0.01
+    df_diamonds_train2["z"] = df_diamonds_train2["z"]+0.01
+    df_diamonds_train2["price"] = df_diamonds_train2["price"]+1
+
+    df_diamonds_train3 = pd.concat([df_diamonds_train,df_diamonds_train2], axis=0).reset_index(drop=True)
+
+    df_diamonds_train = df_diamonds_train3.copy()
+    return df_diamonds_train
+```
+```
+df_diamonds_train = ejecuciondatasetaugmentation(df_diamonds_train)
+df_diamonds_train = ejecuciondatasetaugmentation(df_diamonds_train)
+df_diamonds_train = ejecuciondatasetaugmentation(df_diamonds_train)
+df_diamonds_train = ejecuciondatasetaugmentation(df_diamonds_train)
+df_diamonds_train = ejecuciondatasetaugmentation(df_diamonds_train)
+```
+
+I obtained more than 1.000.000 of records to train de model. 
+
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/rmse2.png"></p>
+
+<p align="center"><img src="https://github.com/alvaro-saez/ih_datamadpt1121_project_m3/blob/main/images/graf2.png"></p>
+
+# THANK YOU VERY MUCH
